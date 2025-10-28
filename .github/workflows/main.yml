@@ -3,14 +3,14 @@ name: Deploy to WordPress.org
 on:
   push:
     tags:
-      - 'v*.*.*' # Trigger only on version tags like v1.0.0
+      - 'v*.*.*' # Trigger only on Git tags like v1.0.0
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout GitHub repo
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Install SVN
@@ -29,10 +29,14 @@ jobs:
       - name: Checkout WordPress.org SVN repo
         run: svn checkout https://plugins.svn.wordpress.org/hide-current-page-from-menu-advanced svn-repo --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
 
-      - name: Copy plugin folder to trunk
-        run: rsync -av --exclude='.git' --exclude='.github' ./plugin/ svn-repo/trunk/
+      - name: Sync plugin folder contents to trunk
+        run: |
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            ./plugin/ svn-repo/trunk/
 
-      - name: Add and commit changes
+      - name: Commit changes
         run: |
           cd svn-repo
           svn add --force * --auto-props --parents --depth infinity -q
