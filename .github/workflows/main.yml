@@ -21,6 +21,7 @@ jobs:
           SVN_USERNAME: ${{ secrets.WP_ORG_USERNAME }}
           SVN_PASSWORD: ${{ secrets.WP_ORG_PASSWORD }}
         run: |
+          mkdir -p ~/.subversion
           echo "[global]" > ~/.subversion/servers
           echo "store-passwords = yes" >> ~/.subversion/servers
           echo "store-plaintext-passwords = yes" >> ~/.subversion/servers
