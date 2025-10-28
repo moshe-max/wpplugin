@@ -1,9 +1,9 @@
-name: Deploy to WordPress.org
+name: Deploy WordPress Plugin
 
 on:
   push:
     tags:
-      - 'v*.*.*' # Trigger only on Git tags like v1.0.0
+      - 'v*.*.*' # Trigger on tags like v2.0.4
 
 jobs:
   deploy:
@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install SVN
-        run: sudo apt-get update && sudo apt-get install -y subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion rsync
 
       - name: Setup SVN credentials
         env:
@@ -31,11 +31,10 @@ jobs:
 
       - name: Sync plugin files to trunk
         run: |
-          rsync -av --delete \
+          rsync -av --delete --ignore-missing-args \
             --exclude='.git' \
             --exclude='.github' \
-            --exclude='*.yml' \
-            ./ svn-repo/trunk/
+            ./plugin/ svn-repo/trunk/
 
       - name: Commit changes
         run: |
