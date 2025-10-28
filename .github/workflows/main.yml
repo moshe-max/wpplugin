@@ -29,12 +29,13 @@ jobs:
       - name: Checkout WordPress.org SVN repo
         run: svn checkout https://plugins.svn.wordpress.org/hide-current-page-from-menu-advanced svn-repo --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
 
-      - name: Sync plugin folder contents to trunk
+      - name: Sync plugin files to trunk
         run: |
           rsync -av --delete \
             --exclude='.git' \
             --exclude='.github' \
-            ./plugin/ svn-repo/trunk/
+            --exclude='*.yml' \
+            ./ svn-repo/trunk/
 
       - name: Commit changes
         run: |
