@@ -1,0 +1,44 @@
+name: Deploy to WordPress.org
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger on version tags like v1.0.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub repo
+        uses: actions/checkout@v3
+
+      - name: Install SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Setup SVN credentials
+        env:
+          SVN_USERNAME: ${{ secrets.WP_ORG_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WP_ORG_PASSWORD }}
+        run: |
+          echo "[global]" > ~/.subversion/servers
+          echo "store-passwords = yes" >> ~/.subversion/servers
+          echo "store-plaintext-passwords = yes" >> ~/.subversion/servers
+
+      - name: Checkout WordPress.org SVN repo
+        run: svn checkout https://plugins.svn.wordpress.org/hide-current-page-from-menu-advanced svn-repo --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
+
+      - name: Copy plugin files to trunk
+        run: rsync -av --exclude='.git' ./ svn-repo/trunk/
+
+      - name: Add and commit changes
+        run: |
+          cd svn-repo
+          svn add --force * --auto-props --parents --depth infinity -q
+          svn ci -m "Deploy $GITHUB_REF_NAME" --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
+
+      - name: Tag release in SVN
+        run: |
+          cd svn-repo
+          svn copy trunk tags/${GITHUB_REF_NAME#v} --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
+          svn ci -m "Tagging ${GITHUB_REF_NAME#v}" --username ${{ secrets.WP_ORG_USERNAME }} --password ${{ secrets.WP_ORG_PASSWORD }}
