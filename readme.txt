@@ -2,7 +2,7 @@
 Contributors: cradlean
 Tags: menu, navigation, hide current page, hide menu item, user roles, custom menus, page visibility
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.8.3
 Stable tag: 1.0
 Requires PHP: 7.4
 License: GPLv2 or later
