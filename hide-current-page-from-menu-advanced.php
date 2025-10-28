@@ -3,15 +3,15 @@
  * Plugin Name: Hide Current Page From Menu – Advanced
  * Plugin URI:  https://wordpress.org/plugins/hide-current-page-from-menu-advanced/
  * Description: Hides the current page’s menu item, with exclusions by user role, menu location, and specific menu item IDs. Secure settings and lightweight performance.
- * Version:     1.1.0
- * Author:      Moshe Spitzer
- * Author URI:  https://profiles.wordpress.org/moshespitzer/
+ * Version:     2.0.0
+ * Author:      cradlesn
+ * Author URI:  https://profiles.wordpress.org/cradlean/
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: hide-current-page-from-menu-advanced
  * Domain Path: /languages
  * Requires at least: 5.0
- * Tested up to: 6.8
+ * Tested up to: 6.8.3
  * Requires PHP: 7.2
  */
 
